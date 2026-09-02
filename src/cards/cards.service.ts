@@ -1,8 +1,14 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
+import { isLuhnValid } from './luhn.util.js';
 
 @Injectable()
 export class CardsService {
-  normalizeCardNumber(cardNumber: string): string {
+  public validateCard(cardNumber: string): boolean {
+    const normalized = this.normalizeCardNumber(cardNumber);
+    return isLuhnValid(normalized);
+  }
+
+  private normalizeCardNumber(cardNumber: string): string {
     const normalized = cardNumber.replace(/[\s-]/g, '');
 
     if (!/^\d+$/.test(normalized)) {

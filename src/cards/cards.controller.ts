@@ -1,7 +1,6 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ValidateCardDto } from './dto/validate-card.dto.js';
 import { CardsService } from './cards.service.js';
-import { isLuhnValid } from './luhn.util.js';
 
 @Controller('cards')
 export class CardsController {
@@ -10,11 +9,7 @@ export class CardsController {
   @Post('validate')
   @HttpCode(HttpStatus.OK)
   validateCard(@Body() validateCardDto: ValidateCardDto) {
-    const normalizedCardNumber = this.cardsService.normalizeCardNumber(
-      validateCardDto.cardNumber,
-    );
-
-    const isValid = isLuhnValid(normalizedCardNumber);
+    const isValid = this.cardsService.validateCard(validateCardDto.cardNumber);
 
     return {
       valid: isValid,
